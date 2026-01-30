@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net">
+  <diagram name="Architecture">
+    <!-- Minimal draw.io placeholder: replace with a professional diagram in draw.io/diagrams.net -->
+    <mxGraphModel dx="1026" dy="626" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="2" value="On-Prem (Raspberry Pi / VM)\nCIDR: 10.0.0.0/24" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="180" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="3" value="OCI VCN\nCIDR: 10.20.0.0/16" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8f8ff;strokeColor=#2f5d9f;" vertex="1" parent="1">
+          <mxGeometry x="260" y="40" width="220" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="4" value="AWS VPC\nCIDR: 10.10.0.0/16" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff8f0;strokeColor=#a04a00;" vertex="1" parent="1">
+          <mxGeometry x="520" y="40" width="220" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="5" value="WireGuard VPN Tunnels\n(Encrypted UDP)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#00a" edge="1" parent="1" source="2" target="3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="6" value="WireGuard VPN Tunnels" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#00a" edge="1" parent="1" source="2" target="4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

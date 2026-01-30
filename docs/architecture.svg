@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="380" viewBox="0 0 1000 380">
+  <style>
+    .box { fill:#ffffff; stroke:#2b2b2b; stroke-width:2px; rx:8px; }
+    .cloud { fill:#f2f7ff; stroke:#2f5d9f; stroke-width:2px; rx:8px; }
+    .vpc { fill:#fff8f0; stroke:#a04a00; stroke-width:2px; rx:8px; }
+    .text { font-family: Arial, Helvetica, sans-serif; font-size:14px; fill:#111 }
+    .title { font-weight:700; font-size:16px }
+    .note { font-size:12px; fill:#444 }
+    .arrow { stroke:#2b7bd3; stroke-width:2px; fill:none; marker-end:url(#arrowhead); }
+  </style>
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2b7bd3"/>
+    </marker>
+  </defs>
+
+  <!-- On-Prem -->
+  <rect x="30" y="40" width="220" height="120" class="box" />
+  <text x="45" y="68" class="text title">On-Prem (Raspberry Pi / VM)</text>
+  <text x="45" y="92" class="text">CIDR: 10.0.0.0/24</text>
+  <text x="45" y="112" class="text">WireGuard / OpenVPN gateway</text>
+
+  <!-- OCI VCN -->
+  <rect x="300" y="20" width="260" height="160" class="cloud" />
+  <text x="320" y="48" class="text title">OCI VCN</text>
+  <text x="320" y="74" class="text">CIDR: 10.20.0.0/16</text>
+  <text x="320" y="98" class="text">Public Subnet: 10.20.1.0/24</text>
+  <text x="320" y="122" class="text">Compute: WireGuard peer</text>
+
+  <!-- AWS VPC -->
+  <rect x="640" y="20" width="260" height="160" class="vpc" />
+  <text x="660" y="48" class="text title">AWS VPC</text>
+  <text x="660" y="74" class="text">CIDR: 10.10.0.0/16</text>
+  <text x="660" y="98" class="text">Public Subnet: 10.10.1.0/24</text>
+  <text x="660" y="122" class="text">EC2: WireGuard peer</text>
+
+  <!-- Arrows -->
+  <path d="M250 100 L300 100" class="arrow" />
+  <path d="M560 100 L640 100" class="arrow" />
+
+  <!-- Labels on arrows -->
+  <text x="270" y="88" class="note">Encrypted UDP (WireGuard)</text>
+  <text x="520" y="88" class="note">Encrypted UDP (WireGuard)</text>
+
+  <!-- Health check / monitoring -->
+  <rect x="360" y="210" width="120" height="80" class="box" />
+  <text x="372" y="238" class="text">Health Check</text>
+  <text x="372" y="258" class="text">Script / Lambda</text>
+
+  <rect x="520" y="210" width="120" height="80" class="box" />
+  <text x="532" y="238" class="text">Ansible Controller</text>
+  <text x="532" y="258" class="text">(ansible-pull / push)</text>
+
+  <path d="M420 200 L420 180 L700 180" class="arrow" />
+  <text x="530" y="170" class="note">Deployment + config (Ansible)</text>
+
+  <!-- Footer note -->
+  <text x="30" y="320" class="note">Diagram: shows CIDRs, subnets and encrypted VPN tunnels. Use this as a reference for the PoC topology.</text>
+</svg>
