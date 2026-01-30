@@ -26,7 +26,7 @@ This repository contains the initial public PoC (**v1.0.0**). See `RELEASE.md` f
 ## 🏗️ Architecture
 
 <p align="center">
-  <img src="docs/architecture.svg" alt="Hybrid Cloud VPN Architecture" width="100%">
+  <img src="docs/architecture-improved.svg" alt="Hybrid Cloud VPN Architecture" width="100%">
 </p>
 
 * **Editable Source:** `docs/architecture.drawio` (Open in [draw.io](https://app.diagrams.net/)).
