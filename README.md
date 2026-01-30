@@ -8,6 +8,10 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![CI: tests](https://github.com/careed23/hybrid-cloud-automation-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/careed23/hybrid-cloud-automation-engine/actions)
 [![Terraform Plan](https://github.com/careed23/hybrid-cloud-automation-engine/actions/workflows/terraform-plan.yml/badge.svg)](https://github.com/careed23/hybrid-cloud-automation-engine/actions)
+![Terraform](https://img.shields.io/badge/Terraform-1.6+-purple?logo=terraform)
+![Ansible](https://img.shields.io/badge/Ansible-2.15+-red?logo=ansible)
+![WireGuard](https://img.shields.io/badge/WireGuard-Encrypted-green?logo=wireguard)
+![Python](https://img.shields.io/badge/Python-3.11+-blue?logo=python)
 
 </div>
 
