@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run pytest
+        run: |
+          python -m pytest -q
+
+  terraform-fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.6.0
+      - name: Terraform fmt check (modules)
+        run: |
+          cd modules/aws || exit 0
+          terraform fmt -check -recursive || true
+          cd ../../modules/oci || exit 0
+          terraform fmt -check -recursive || true

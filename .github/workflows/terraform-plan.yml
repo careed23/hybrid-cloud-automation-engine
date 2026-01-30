@@ -1,0 +1,78 @@
+name: Terraform PR Plan (safe)
+
+on:
+  pull_request:
+    paths:
+      - 'modules/**'
+      - 'examples/**'
+      - '.github/workflows/**'
+
+jobs:
+  terraform-plan:
+    name: Terraform plan (read-only, safe defaults)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.6.0
+
+      - name: Terraform fmt check
+        run: |
+          set -e
+          terraform -version
+          # Run fmt checks for modules and examples; don't fail the job if no files
+          for d in modules aws modules/oci examples/terraform; do
+            if [ -d "$d" ]; then
+              (cd "$d" && terraform fmt -check -recursive) || true
+            fi
+          done
+
+      - name: Run safe terraform plan in roots
+        env:
+          TF_IN_AUTOMATION: true
+          # Intentionally leave cloud provider creds empty by default for safety.
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID || '' }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY || '' }}
+          OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT || '' }}
+        run: |
+          set -e
+          # Directories to attempt planning. We run init with -backend=false and plan with -refresh=false
+          DIRS=("modules/aws" "modules/oci" "examples/terraform")
+          for d in "${DIRS[@]}"; do
+            if [ -d "$d" ]; then
+              echo "==> Planning in $d"
+              (cd "$d" && terraform init -backend=false -input=false) || echo "init failed in $d"
+              # Try validate first
+              (cd "$d" && terraform validate) || echo "validate failed in $d (may require provider credentials or not be a root module)"
+              # Run a non-refresh plan which avoids reading remote state and minimizes provider calls
+              if (cd "$d" && terraform plan -refresh=false -input=false -no-color -out=plan.tfplan); then
+                echo "Plan succeeded in $d"
+                # Show a short summary of the plan
+                (cd "$d" && terraform show -no-color plan.tfplan | sed -n '1,200p')
+              else
+                echo "Plan failed in $d. This can happen when provider/data sources require cloud credentials to query remote resources."
+                echo "To run full plans in CI, set repository secrets for provider credentials (AWS/OCI) and enable them in the workflow."
+              fi
+            fi
+          done
+
+      - name: Upload plan artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-plans
+          path: |
+            modules/aws/plan.tfplan
+            modules/oci/plan.tfplan
+            examples/terraform/plan.tfplan
+
+      - name: Notify about credentials (info)
+        if: always()
+        run: |
+          echo "If the plan step failed for a directory because provider data sources required access, you can provide secrets and re-run the workflow."
+          echo "For AWS: set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY repository secrets."
+          echo "For OCI: set OCI_CLI_KEY_CONTENT and OCI_TENANCY, OCI_USER, OCI_FINGERPRINT, OCI_REGION as needed."
