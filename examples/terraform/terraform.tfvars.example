@@ -1,0 +1,14 @@
+# Example terraform.tfvars for examples/terraform
+# Copy this file to terraform.tfvars and fill in provider-specific values before applying.
+
+aws_region = "us-east-1"
+aws_ami = "" # optional override; leave empty to use canonical Ubuntu lookup
+
+oci_compartment_ocid = ""
+oci_image_id = "" # OCI image OCID to create an instance (optional)
+oci_availability_domain = ""
+
+name_prefix = "hcae-demo"
+repo_url = "https://github.com/careed23/hybrid-cloud-automation-engine.git"
+# ssh_key_path is written by Terraform in the examples root when TLS private key is generated.
+# ssh_key_path = "${path.module}/ssh_key"
