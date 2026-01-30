@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🌐 hybrid-cloud-automation-engine 🌐
+# 🌐 Hybrid-Cloud-Automation-Engine 🌐
 
 ### **Cloud-Native Multi-Cloud VPN Gateway**
 *A reproducible, IaC-first reference for connecting an on-prem (Raspberry Pi / VM) network to OCI and AWS using Terraform and Ansible.*
