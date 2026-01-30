@@ -1,0 +1,42 @@
+---
+# Tasks for the wireguard role
+- name: Ensure /etc/wireguard exists
+  file:
+    path: /etc/wireguard
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: Generate WireGuard private key if not present
+  command: wg genkey
+  register: wg_private
+  changed_when: wg_private.stdout != ""
+  when: not (ansible_facts['distribution'] is defined and lookup('file', '/etc/wireguard/private.key', errors='ignore') is not failed)
+
+- name: Save private key to file when generated
+  copy:
+    dest: /etc/wireguard/private.key
+    content: "{{ wg_private.stdout }}\n"
+    owner: root
+    group: root
+    mode: '0600'
+  when: wg_private is defined and wg_private.stdout != ""
+
+- name: Derive public key from private key
+  command: /bin/sh -c "echo '{{ wg_private.stdout if wg_private is defined else lookup('file','/etc/wireguard/private.key') }}' | wg pubkey"
+  register: wg_public
+  changed_when: false
+
+- name: Save generated public key
+  copy:
+    dest: /etc/wireguard/public.key
+    content: "{{ wg_public.stdout }}\n"
+    owner: root
+    group: root
+    mode: '0644'
+  when: wg_public is defined
+
+# The role's responsibility is to ensure keys exist. Config generation and peer exchange
+# is handled at the playbook level (site.yml) where we can gather all hosts' public keys
+# and render a multi-peer template per-host.

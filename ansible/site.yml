@@ -1,0 +1,38 @@
+- name: Deploy WireGuard to all VPN hosts and register public keys
+  hosts: vpn_hosts
+  become: true
+  roles:
+    - role: wireguard
+
+- name: Gather public keys and deploy multi-peer configs
+  hosts: vpn_hosts
+  become: true
+  gather_facts: true
+  vars:
+    wg_port: 51820
+    wg_interface: wg0
+  tasks:
+    - name: Read public key file and set as fact
+      slurp:
+        src: /etc/wireguard/public.key
+      register: pubkey_raw
+      ignore_errors: yes
+
+    - name: Set host WireGuard public key fact
+      set_fact:
+        wg_pubkey: "{{ (pubkey_raw.content | b64decode).strip() if pubkey_raw is defined and pubkey_raw.content is defined else '' }}"
+
+    - name: Render multi-peer WireGuard config
+      template:
+        src: templates/wg0_multi.conf.j2
+        dest: /etc/wireguard/{{ wg_interface }}.conf
+        owner: root
+        group: root
+        mode: '0600'
+
+    - name: Enable and restart WireGuard
+      systemd:
+        name: wg-quick@{{ wg_interface }}
+        enabled: yes
+        state: restarted
+        daemon_reload: yes

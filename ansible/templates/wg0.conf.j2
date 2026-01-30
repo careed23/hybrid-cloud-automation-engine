@@ -1,0 +1,10 @@
+[Interface]
+PrivateKey = {{ private_key }}
+Address = 10.100.0.1/24
+ListenPort = {{ wg_port }}
+
+[Peer]
+PublicKey = {{ peer_public_key }}
+Endpoint = {{ peer_endpoint }}
+AllowedIPs = {{ allowed_ips }}
+PersistentKeepalive = 25

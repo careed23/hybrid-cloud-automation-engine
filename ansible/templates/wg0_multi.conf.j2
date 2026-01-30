@@ -1,0 +1,14 @@
+[Interface]
+PrivateKey = {{ lookup('file', '/etc/wireguard/private.key') }}
+Address = 10.100.0.{{ groups['vpn_hosts'].index(inventory_hostname) + 1 }}/24
+ListenPort = {{ wg_port | default(51820) }}
+
+{% for peer in groups['vpn_hosts'] %}
+{%   if peer != inventory_hostname %}
+[Peer]
+PublicKey = {{ hostvars[peer].wg_pubkey | default('MISSING') }}
+Endpoint = {{ hostvars[peer].ansible_host | default(hostvars[peer].inventory_hostname) }}:{{ wg_port | default(51820) }}
+AllowedIPs = 10.100.0.{{ groups['vpn_hosts'].index(peer) + 1 }}/32
+PersistentKeepalive = 25
+{%   endif %}
+{% endfor %}
